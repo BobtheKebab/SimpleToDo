@@ -7,10 +7,14 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.apache.commons.io.FileUtils
+import java.io.File
+import java.io.IOException
+import java.nio.charset.Charset
 
 class MainActivity : AppCompatActivity() {
 
-    val listOfTasks = mutableListOf<String>()
+    var listOfTasks = mutableListOf<String>()
     lateinit var adapter: TaskItemAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +27,8 @@ class MainActivity : AppCompatActivity() {
                 listOfTasks.removeAt(position)
                 // Notify adapter that data has changed
                 adapter.notifyDataSetChanged()
+                // Save tasks to data file
+                saveItems()
             }
         }
 
@@ -31,8 +37,8 @@ class MainActivity : AppCompatActivity() {
 //            Log.i("Caren", "User clicked on button")
 //        }
 
-        listOfTasks.add("Do laundry")
-        listOfTasks.add("Go for a walk")
+        // Load data from file into listOfTasks
+        loadItems()
 
         // Look up recyclerView in layout
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
@@ -60,6 +66,36 @@ class MainActivity : AppCompatActivity() {
 
             // Clear the text field
             inputTextField.setText("")
+
+            // Save tasks to data file
+            saveItems()
         }
     }
+
+    // Save user inputted data by writing and reading from a file
+
+    // Method to get file we need
+    fun getDataFile() : File {
+        // Every line in file is a single task
+        return File(filesDir, "data.txt")
+    }
+
+    // Method to load items from file (read every line)
+    fun loadItems() {
+        try {
+            listOfTasks = FileUtils.readLines(getDataFile(), Charset.defaultCharset())
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+        }
+    }
+
+    // Method to save items (write into file)
+    fun saveItems() {
+        try {
+            FileUtils.writeLines(getDataFile(), listOfTasks)
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+        }
+    }
+
 }
