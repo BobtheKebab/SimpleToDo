@@ -32,11 +32,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Detect when user clicks on "Add" button
-//        findViewById<Button>(R.id.button).setOnClickListener {
-//            Log.i("Caren", "User clicked on button")
-//        }
-
         // Load data from file into listOfTasks
         loadItems()
 
